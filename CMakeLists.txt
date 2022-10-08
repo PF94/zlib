@@ -215,6 +215,10 @@ if(NOT SKIP_INSTALL_LIBRARIES AND NOT SKIP_INSTALL_ALL )
         RUNTIME DESTINATION "${INSTALL_BIN_DIR}"
         ARCHIVE DESTINATION "${INSTALL_LIB_DIR}"
         LIBRARY DESTINATION "${INSTALL_LIB_DIR}" )
+if(IS_DUCKOS)
+add_dependencies(zlib libc)
+add_dependencies(zlibstatic libc)
+endif()
 endif()
 if(NOT SKIP_INSTALL_HEADERS AND NOT SKIP_INSTALL_ALL )
     install(FILES ${ZLIB_PUBLIC_HDRS} DESTINATION "${INSTALL_INC_DIR}")
@@ -230,6 +234,7 @@ endif()
 # Example binaries
 #============================================================================
 
+if(NOT IS_DUCKOS) # borked on duckos, so just don't bother
 add_executable(example test/example.c)
 target_link_libraries(example zlib)
 add_test(example example)
@@ -246,4 +251,5 @@ if(HAVE_OFF64_T)
     add_executable(minigzip64 test/minigzip.c)
     target_link_libraries(minigzip64 zlib)
     set_target_properties(minigzip64 PROPERTIES COMPILE_FLAGS "-D_FILE_OFFSET_BITS=64")
+endif()
 endif()
